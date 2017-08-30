@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shit</title>
+    <link type="text/css" rel="stylesheet" href="css/MarvelTopo.css"/>
+    <script type="application/javascript" src="lib/konva.js"></script>
+    <script type="application/javascript" src="lib/jquery-3.2.1.min.js"></script>
+    <script type="application/javascript" src="js/_1_stage/MarvelTopoResource.js"></script>
+    <script type="application/javascript" src="js/_1_stage/MarvelTopoStage.js"></script>
+    <script type="application/javascript" src="js/_2_layer/MarvelTopoLayer.js"></script>
+    <script type="application/javascript" src="js/_3_sprite/_1_node/MarvelTopoNodeGroup.js"></script>
+    <script type="application/javascript" src="js/_3_sprite/_1_node/MarvelTopoNode.js"></script>
+    <script type="application/javascript" src="js/_3_sprite/_2_link/MarvelTopoLinkGroup.js"></script>
+    <script type="application/javascript" src="js/_3_sprite/_2_link/MarvelTopoLink.js"></script>
+    <script type="application/javascript" src="js/_3_sprite/_3_box/MarvelTopoBoxGroup.js"></script>
+    <script type="application/javascript" src="js/_3_sprite/_3_box/MarvelTopoBox.js"></script>
+    <script type="application/javascript" src="js/_3_sprite/MarvelTopoSprite.js"></script>
+    <script type="application/javascript" src="js/MarvelTopo.js"></script>
+    <script>
+        $(document).ready(function(){
+            //#region Mock
+
+            //#region resources
+
+            var THEME_KEY = "dark";
+
+            var IMG_MAP = {
+                nodeGroup: "image/" + THEME_KEY + "/nodeGroup1.svg",
+                nodeGroupExpand: "image/" + THEME_KEY + "/nodeGroupExpand.svg",
+                node: "image/" + THEME_KEY + "/node1.svg"
+            };
+
+            var THEME_DARK = {
+                dark: {
+                    link: {
+                        linkColor: {
+                            linkType1: "#ababb5",
+                            linkType2: "red"
+                        }
+                    }
+                }
+            };
+
+            //#endregion
+
+            //#region node
+
+            var arrNodeGroup = [];
+            for(var i=0;i<2;i++) {
+                var iX = Math.random() * 400;
+                var iY = Math.random() * 200;
+                var oNodeGroup = {
+                    id: "nodeGroup" + i,
+                    x: iX,
+                    y: iY,
+                    uiImgKey: "nodeGroup",
+                    uiLabel: "nodeGroup" + i,
+                    uiExpand: false,
+                    uiExpandWidth: 200,
+                    uiExpandHeight: 200,
+                    uiLinkIds: [],
+                    children: [{
+                        id: "node" + i + "_1",
+                        x: 50,
+                        y: 50,
+                        uiImgKey: "node",
+                        uiLabel: "node" + i + "_1",
+                        uiLinkIds: [],
+                    }, {
+                        id: "node" + i + "_2",
+                        x: 100,
+                        y: 100,
+                        uiImgKey: "node",
+                        uiLabel: "node" + i + "_2",
+                        uiLinkIds: [],
+                    }]
+                };
+                arrNodeGroup.push(oNodeGroup);
+            }
+
+            var arrNode = [];
+            for(var i=0;i<2;i++){
+                var iX = Math.random() * 400;
+                var iY = Math.random() * 200;
+                var oNode = {
+                    id: "node" + i,
+                    x: iX,
+                    y: iY,
+                    uiImgKey: "node",
+                    uiLabel: "node" + i,
+                    uiLinkIds: [],
+                };
+                arrNode.push(oNode);
+            }
+
+            //#endregion
+
+            //#region link
+
+            var arrNodeBase = [];
+            for(var i=0;i<2;i++){
+                var iX = Math.random() * 400;
+                var iY = Math.random() * 200;
+                var oNode = {
+                    id: "nodeBase" + i,
+                    x: iX,
+                    y: iY,
+                    uiImgKey: "node",
+                    uiLabel: "node" + i,
+                    uiLinkIds: ["link0", "link1", "link2", "gLink1", "gLink1_1", "gLink1_2"]
+                };
+                for(var j=3;j<3;j++){
+                    oNode.uiLinkIds.push("link" + j);
+                }
+                arrNodeBase.push(oNode);
+            }
+
+            var arrLinkBase = [];
+            for(var i=0;i<3;i++){
+                var oLink = {
+                    id: "link" + i,
+                    x: iX,
+                    y: iY,
+                    srcNodeId: "nodeBase0",
+                    dstNodeId: "nodeBase1",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "link-nodeBase0-nodeBase1-" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkColorKey: "linkType1",
+                    uiLinkWidth: 3
+                };
+                arrLinkBase.push(oLink);
+            }
+            var oGLink = {
+                id: "gLink1",
+                x: iX,
+                y: iY,
+                srcNodeId: "nodeBase0",
+                dstNodeId: "nodeBase1",
+                uiLabelL: "nodeBase0",
+                uiLabelM: "link-nodeBase0-nodeBase1-" + i,
+                uiLabelR: "nodeBase1",
+                uiLinkColorKey: "linkType2",
+                uiLinkWidth: 3,
+                children: [{
+                    id: "gLink1_1",
+                    x: iX,
+                    y: iY,
+                    srcNodeId: "nodeBase0",
+                    dstNodeId: "nodeBase1",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "link-nodeBase0-nodeBase1-" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkColorKey: "linkType2",
+                    uiLinkWidth: 3
+                }, {
+                    id: "gLink1_2",
+                    x: iX,
+                    y: iY,
+                    srcNodeId: "nodeBase0",
+                    dstNodeId: "nodeBase1",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "link-nodeBase0-nodeBase1-" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkColorKey: "linkType2",
+                    uiLinkWidth: 3
+                }]
+            };
+            arrLinkBase.push(oGLink);
+
+            //#endregion
+
+            //#endregion
+
+            //Topo
+            var oTopo = new $.MarvelTopo();
+            //Resource
+            oTopo.Resource.init(THEME_KEY, IMG_MAP, THEME_DARK, function(){
+                //Stage
+                oTopo.ins.stage =  oTopo.Stage.init("id1",
+                    window.innerWidth, window.innerHeight, oTopo);
+                oTopo.ins.layerLink = oTopo.Layer.init(oTopo);
+                oTopo.ins.layerNode = oTopo.Layer.init(oTopo);
+
+                //Node
+                for(var i=0;i<arrNodeGroup.length;i++){
+                    oTopo.Sprite.NodeGroup.draw(arrNodeGroup[i], oTopo);
+                }
+                for(var i=0;i<arrNode.length;i++){
+                    oTopo.Sprite.Node.draw(arrNode[i], oTopo);
+                }
+                oTopo.Layer.reDraw(oTopo.ins.layerNode);
+
+                //Link
+                for(var i=0;i<arrNodeBase.length;i++){
+                    oTopo.Sprite.Node.draw(arrNodeBase[i], oTopo);
+                }
+                oTopo.Sprite.LinkGroup.draw4Group(arrLinkBase, oTopo);
+                oTopo.Layer.reDraw(oTopo.ins.layerLink);
+            });
+        });
+    </script>
+</head>
+<body>
+    <button id="expandOrCollapseGroup">expandOrCollapseGroup</button>
+    <div id="id1"></div>
+</body>
+</html>
