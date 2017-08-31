@@ -26,6 +26,7 @@
                 y: iY,
                 draggable: true
             });
+            oGroup.tag = oBuObj;
 
             //1.oImage
             var oImage = new Konva.Image({
@@ -100,7 +101,7 @@
             return oGroup;
         };
 
-        this.draw4Group = function(oBuObj, oExpandGroupExists, oTopo){
+        this.drawInGroup = function(oBuObj, oExpandGroupExists, oTopo){
             //x/y
             var iX = oBuObj.x;
             var iY = oBuObj.y;
@@ -127,6 +128,7 @@
                     }
                 }
             });
+            oGroup.tag = oBuObj;
 
             //1.oImage
             var oImage = new Konva.Image({

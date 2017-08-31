@@ -68,6 +68,22 @@
             return oEle;
         };
 
+        this.findGroupByTagAttr = function(strAttrKey, oAttrValue, oTopo){
+            var arrRes = [];
+
+            var arrGroup = oTopo.ins.stage.find("Group");
+            for(var i=0;i<arrGroup.length;i++){
+                var oGroup = arrGroup[i];
+                if(undefined != oGroup.tag[strAttrKey]){
+                    if(oGroup.tag[strAttrKey] == oAttrValue){
+                        arrRes.push(oGroup);
+                    }
+                }
+            }
+
+            return arrRes;
+        }
+
         //#endregion
     }
 })(jQuery);

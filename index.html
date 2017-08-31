@@ -56,9 +56,9 @@
                     y: iY,
                     uiImgKey: "nodeGroup",
                     uiLabel: "nodeGroup" + i,
-                    uiExpand: false,
-                    uiExpandWidth: 200,
-                    uiExpandHeight: 200,
+                    uiExpandNode: false,
+                    uiExpandNodeWidth: 200,
+                    uiExpandNodeHeight: 200,
                     uiLinkIds: [],
                     children: [{
                         id: "node" + i + "_1",
@@ -199,11 +199,19 @@
                 oTopo.Sprite.LinkGroup.draw4Group(arrLinkBase, oTopo);
                 oTopo.Layer.reDraw(oTopo.ins.layerLink);
             });
+
+            $("#expandNodeGroup").click(function(){
+                oTopo.Sprite.NodeGroup.expandAllNodeGroup(oTopo);
+            });
+            $("#collapseNodeGroup").click(function(){
+                oTopo.Sprite.NodeGroup.collapseAllNodeGroup(oTopo);
+            });
         });
     </script>
 </head>
 <body>
-    <button id="expandOrCollapseGroup">expandOrCollapseGroup</button>
+    <button id="expandNodeGroup">expandNodeGroup</button>
+    <button id="collapseNodeGroup">collapseNodeGroup</button>
     <div id="id1"></div>
 </body>
 </html>

@@ -7,18 +7,12 @@
         var ICON_WIDTH = 32;
         var ICON_HEIGHT = 32;
 
-        this.COLLAPSE = "collapseGroup";
-        this.EXPAND = "expandGroup";
-
-        this.SELECT = "selectNode";
-        this.UNSELECT = "";
-
         //#endregion
 
         //#region draw
 
         this.draw = function(oBuObj, oTopo){
-            if(!oBuObj.uiExpand){
+            if(!oBuObj.uiExpandNode){
                 return self.drawCollapse(oBuObj, undefined, oTopo);
             }
             else{
@@ -34,13 +28,14 @@
             }
 
             //x/y
-            var iX = oExpandGroupExists == undefined ? oBuObj.x : oExpandGroupExists.getPosition().x;
-            var iY = oExpandGroupExists == undefined ? oBuObj.y : oExpandGroupExists.getPosition().y;
+            var iX = oExpandGroupExists == undefined ?
+                oBuObj.x : oExpandGroupExists.getPosition().x;
+            var iY = oExpandGroupExists == undefined ?
+                oBuObj.y : oExpandGroupExists.getPosition().y;
 
             //0.oGroup
             var oGroup = new Konva.Group({
                 id: oBuObj.id,
-                name: self.COLLAPSE,
                 x: iX,
                 y: iY,
                 draggable: true
@@ -72,7 +67,7 @@
 
             //4.event
             oGroup.on('dblclick', function(evt) {
-                oBuObj.uiExpand = !oBuObj.uiExpand;
+                oGroup.tag.uiExpandNode = true;
                 self.drawExpand(oBuObj, oGroup, oTopo);
             });
             oGroup.on('mouseover', function(evt) {
@@ -92,6 +87,7 @@
             });
             oImage.on("click", function(evt){
                 _setSelectNodeStyle(this, oTopo);
+                console.log(oGroup.tag);
             });
             oImage.on("mouseover", function(){
                 _setMouseHoverStyle(this, oTopo)
@@ -111,8 +107,10 @@
             }
 
             //x/y
-            var iX = oCollapseGroupExists == undefined ? oBuObj.x : oCollapseGroupExists.getPosition().x;
-            var iY = oCollapseGroupExists == undefined ? oBuObj.y : oCollapseGroupExists.getPosition().y;
+            var iX = oCollapseGroupExists == undefined ?
+                oBuObj.x : oCollapseGroupExists.getPosition().x;
+            var iY = oCollapseGroupExists == undefined ?
+                oBuObj.y : oCollapseGroupExists.getPosition().y;
 
             //#region circle
 
@@ -122,7 +120,6 @@
                 x: iX,
                 y: iY,
                 opacity: oBuObj.opacity ? oBuObj.opacity : 1.0,
-                name: self.EXPAND,
                 draggable: true
             });
             oGroup.tag = oBuObj;
@@ -132,8 +129,8 @@
                 x: 0,
                 y: 0,
                 image: oTopo.Resource.m_mapImage["nodeGroupExpand"],
-                width: oBuObj.uiExpandWidth,
-                height: oBuObj.uiExpandHeight
+                width: oBuObj.uiExpandNodeWidth,
+                height: oBuObj.uiExpandNodeHeight
             });
             oGroup.add(oImage);
 
@@ -144,7 +141,7 @@
                 text: oBuObj.uiLabel,
                 fill: oTopo.Resource.getTheme().node.labelColor
             });
-            _setLabelCenter(oBuObj.uiExpandWidth, oBuObj.uiExpandHeight, oLabel);
+            _setLabelCenter(oBuObj.uiExpandNodeWidth, oBuObj.uiExpandNodeHeight, oLabel);
             oGroup.add(oLabel);
 
             //3.oLayer
@@ -156,14 +153,14 @@
 
             for(var i=0;i<oBuObj.children.length;i++){
                 var oBuObjItem = oBuObj.children[i];
-                oTopo.Sprite.Node.draw4Group(oBuObjItem, oGroup, oTopo);
+                oTopo.Sprite.Node.drawInGroup(oBuObjItem, oGroup, oTopo);
             }
 
             //#endregion
 
             //4.event
             oGroup.on('dblclick', function(evt) {
-                oBuObj.uiExpand = !oBuObj.uiExpand;
+                oGroup.tag.uiExpandNode = false;
                 self.drawCollapse(oBuObj, oGroup, oTopo);
             });
             oGroup.on('mouseover', function(evt) {
@@ -173,9 +170,10 @@
                 document.body.style.cursor = 'default';
             });
             //TODO:待调整nodeGroup选中样式
-            // oImage.on("click", function(evt){
-            //     _setSelectNodeStyle(this, oTopo);
-            // });
+            oImage.on("click", function(evt){
+                console.log(oGroup.tag);
+                // _setSelectNodeStyle(this, oTopo);
+            });
             oImage.on("mouseover", function(){
                 _setMouseHoverStyle(this, oTopo)
             });
@@ -198,9 +196,6 @@
         };
 
         var _setSelectNodeStyle = function(oImage, oTopo){
-            //1.便于后续搜索
-            oImage.name(this.SELECT);
-            //2.style
             oImage.fillEnabled(true);
             oImage.strokeEnabled(true);
             oImage.stroke(oTopo.Resource.getTheme().node.selectColor);
@@ -212,9 +207,6 @@
         };
 
         var _setUnSelectNodeStyle = function(oImage){
-            //1.便于后续搜索
-            oImage.name(this.UNSELECT);
-            //2.设置样式
             oImage.fillEnabled(false);
             oImage.strokeEnabled(false);
         };
@@ -237,6 +229,30 @@
 
         this.unSelectNodeGroup = function(oImage){
             _setUnSelectNodeStyle(oImage);
+        };
+
+        this.expandAllNodeGroup = function(oTopo){
+            //1.findAll
+            var arrCollapseGroupExists =
+                oTopo.Stage.findGroupByTagAttr("uiExpandNode", false, oTopo);
+
+            //2.expand
+            for(var i=0;i<arrCollapseGroupExists.length;i++){
+                var oCollapseGroupExists = arrCollapseGroupExists[i];
+                this.drawExpand(oCollapseGroupExists.tag, oCollapseGroupExists, oTopo);
+            }
+        };
+
+        this.collapseAllNodeGroup = function(oTopo){
+            //1.findAll
+            var arrExpandGroupExists =
+                oTopo.Stage.findGroupByTagAttr("uiExpandNode", false, oTopo);
+
+            //2.expand
+            for(var i=0;i<arrExpandGroupExists.length;i++){
+                var oExpandGroupExists = arrExpandGroupExists[i];
+                this.drawCollapse(oExpandGroupExists.tag, oExpandGroupExists, oTopo);
+            }
         };
 
         //#endregion
