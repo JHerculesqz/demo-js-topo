@@ -13,20 +13,22 @@
                     bgImg: "url('image/dark/bg.png')"
                 },
                 node: {
-                    labelColor: "#fff",
-                    selectColor: "rgba(255,255,255,0.25)"
+
                 },
                 link: {
-                    linkColor: {
-                        default: "#fff"
-                    }
+
                 }
             },
             default:{
+                stage: {
+                    bgColor: "#272743",
+                    bgImg: "url('image/dark/bg.png')"
+                },
                 node: {
-                    labelColor: "#000",
-                    groupBorderColor: "#000",
-                    selectColor: "rgba(0,0,0,0.25)"
+
+                },
+                link: {
+
                 }
             }
         };

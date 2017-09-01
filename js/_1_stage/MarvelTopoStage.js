@@ -10,17 +10,19 @@
 
         //#region Fields
 
-
-
         //#endregion
 
         //#region init
 
         this.init = function(strId, iWidth, iHeight, oTopo){
-            //_initContainer
+            //#region 1._initContainer
+
             _initContainer(strId, oTopo);
 
-            //oStage
+            //#endregion
+
+            //#region 2.init oStage
+
             var oStage = new Konva.Stage({
                 container: strId,
                 width: iWidth,
@@ -28,8 +30,30 @@
                 draggable: true
             });
 
-            //event
-            _initEventZoom(oStage);
+            //init oStageRect
+            var oStageLayer = new Konva.Layer();
+            oStage.add(oStageLayer);
+            var oStageRect = new Konva.Rect({
+                id: "oStageRect",
+                x: 0,
+                y: 0,
+                width: oStage.getWidth(),
+                height: oStage.getHeight()
+            });
+            oStageLayer.add(oStageRect);
+            oTopo.Layer.reDraw(oStageLayer);
+            oTopo.ins.layerBg = oStageLayer;
+
+            //#endregion
+
+            //#region 3.event
+
+            _initEventWheel(oStage);
+            _initEventAddMinus(oTopo);
+            _initEventClick(oStageRect, oTopo);
+            _initEventCtrlPress(oTopo);
+
+            //#endregion
 
             return oStage;
         };
@@ -39,8 +63,12 @@
             $("#" + strId).css("background-image", oTopo.Resource.getTheme().stage["bgImg"]);
         };
 
-        //TODO:需要缩小绑定事件的范围
-        var _initEventZoom = function(oStage){
+        //#endregion
+
+        //#region event
+
+        var _initEventWheel = function(oStage){
+            //TODO:需要缩小绑定事件的范围
             window.addEventListener('wheel', function(e){
                 e.preventDefault();
                 var oldScale = oStage.scaleX();
@@ -58,10 +86,30 @@
                 oStage.batchDraw();
             });
         };
+        var _initEventAddMinus = function(oTopo){
+            keyboardJS.bind('=', function(e) {
+                oTopo.Sprite.NodeGroup.zoomInSelectNodeGroupAndNodes();
+            });
+            keyboardJS.bind('-', function(e) {
+                oTopo.Sprite.NodeGroup.zoomOutSelectNodeGroupAndNodes();
+            });
+        };
+        var _initEventClick = function(oStageRect, oTopo){
+            oStageRect.on("click", function(evt){
+                oTopo.Sprite.NodeGroup.unSelectNodeGroupAndNodes(oTopo);
+            });
+        };
+        var _initEventCtrlPress = function(oTopo){
+            keyboardJS.bind('ctrl', function(e) {
+                keyboardJS.isCtrlPress = true;
+            }, function(e){
+                keyboardJS.isCtrlPress = false;
+            });
+        };
 
         //#endregion
 
-        //#region find
+        //#region imsg
 
         this.findOne = function (strId, oTopo) {
             var oEle = oTopo.ins.stage.findOne("#" + strId);

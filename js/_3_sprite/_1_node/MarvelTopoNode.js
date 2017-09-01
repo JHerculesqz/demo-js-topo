@@ -7,23 +7,23 @@
         var ICON_WIDTH = 32;
         var ICON_HEIGHT = 32;
 
-        this.SELECT = "selectNode";
-        this.UNSELECT = "";
-
         //#endregion
 
         //#region draw
 
         this.draw = function(oBuObj, oTopo){
-            //x/y
-            var iX = oBuObj.x;
-            var iY = oBuObj.y;
+            //#region 1.getPos
 
-            //0.oGroup
+            var oPos = _getPos(oBuObj);
+
+            //#endregion
+
+            //#region 2.node
+
             var oGroup = new Konva.Group({
                 id: oBuObj.id,
-                x: iX,
-                y: iY,
+                x: oPos.x,
+                y: oPos.y,
                 draggable: true
             });
             oGroup.tag = oBuObj;
@@ -45,72 +45,75 @@
                 text: oBuObj.uiLabel,
                 fill: oTopo.Resource.getTheme().node.labelColor
             });
-            _setLabelCenter(ICON_WIDTH, ICON_HEIGHT, oLabel);
+            oTopo.Sprite.NodeGroup._setLabelCenter(ICON_WIDTH, ICON_HEIGHT, oLabel);
             oGroup.add(oLabel);
 
-            //3.oLayer
+            //#endregion
+
+            //#region 3.parent
+
             oTopo.ins.layerNode.add(oGroup);
 
-            //4.event
-            oGroup.on('click', function(evt) {
-                console.log("click...");
-            });
-            oGroup.on('dragmove', function(evt){
-                //1.联动关联的链路
-                var arrLinkId = oBuObj.uiLinkIds;
-                var arrLinks = [];
-                for(var i=0;i<arrLinkId.length;i++){
-                    var oLink = oTopo.Stage.findOne(arrLinkId[i], oTopo);
-                    if(oLink){
-                        var oBuObjLink = oLink.tag;
-                        // oTopo.Sprite.Link.draw(oBuObjLink, i, oTopo);
-                        //如果是捆绑链路
-                        if(oBuObjLink.children && oBuObjLink.children.length > 1){
-                            arrLinks.push(oBuObjLink);
-                        }
-                        //如果是捆绑链路的子链路
-                        else if(oBuObjLink.parent){
-                            if(arrLinks.indexOf(oBuObjLink.parent) < 0){
-                                arrLinks.push(oBuObjLink.parent);
-                            }
-                        }
-                        //如果是普通单链路
-                        else{
-                            arrLinks.push(oBuObjLink);
-                        }
-                    }
-                }
-                oTopo.Sprite.LinkGroup.draw4Group(arrLinks, oTopo);
-            });
+            //#endregion
+
+            //#region 4.event
+
             oGroup.on('mouseover', function(evt) {
-                document.body.style.cursor = 'pointer';
+                oTopo.Sprite.NodeGroup._onNodeGroupOrNodeMouseOver(oGroup, oTopo);
             });
             oGroup.on('mouseout', function(evt) {
-                document.body.style.cursor = 'default';
+                oTopo.Sprite.NodeGroup._onNodeGroupOrNodeMouseOut(oGroup, oTopo);
             });
-            oImage.on("click", function(evt){
-                _setSelectNodeStyle(this, oTopo);
+            oGroup.on('click', function(evt) {
+                oTopo.Sprite.NodeGroup._onNodeGroupOrNodeClick(oGroup, oTopo);
             });
-            oImage.on("mouseover", function(){
-                _setMouseHoverStyle(this, oTopo)
+            oGroup.on('dragmove', function(evt){
+                //TODO:调用LinkGroup
+                // //1.联动关联的链路
+                // var arrLinkId = oBuObj.uiLinkIds;
+                // var arrLinks = [];
+                // for(var i=0;i<arrLinkId.length;i++){
+                //     var oLink = oTopo.Stage.findOne(arrLinkId[i], oTopo);
+                //     if(oLink){
+                //         var oBuObjLink = oLink.tag;
+                //         // oTopo.Sprite.Link.draw(oBuObjLink, i, oTopo);
+                //         //如果是捆绑链路
+                //         if(oBuObjLink.children && oBuObjLink.children.length > 1){
+                //             arrLinks.push(oBuObjLink);
+                //         }
+                //         //如果是捆绑链路的子链路
+                //         else if(oBuObjLink.parent){
+                //             if(arrLinks.indexOf(oBuObjLink.parent) < 0){
+                //                 arrLinks.push(oBuObjLink.parent);
+                //             }
+                //         }
+                //         //如果是普通单链路
+                //         else{
+                //             arrLinks.push(oBuObjLink);
+                //         }
+                //     }
+                // }
+                // oTopo.Sprite.LinkGroup.draw4Group(arrLinks, oTopo);
             });
-            oImage.on("mouseout", function(){
-                _setMouseHoverOutStyle(this, oTopo);
-            });
+
+            //#endregion
 
             return oGroup;
         };
 
         this.drawInGroup = function(oBuObj, oExpandGroupExists, oTopo){
-            //x/y
-            var iX = oBuObj.x;
-            var iY = oBuObj.y;
+            //region 1.getPos
 
-            //0.oGroup
+            var oPos = _getPos(oBuObj);
+
+            //#endregion
+
+            //#region 2.node
+
             var oGroup = new Konva.Group({
                 id: oBuObj.id,
-                x: iX,
-                y: iY,
+                x: oPos.x,
+                y: oPos.y,
                 draggable: true,
                 dragBoundFunc: function(pos) {
                     var x = oExpandGroupExists.getChildren()[0].x();
@@ -147,79 +150,52 @@
                 text: oBuObj.uiLabel,
                 fill: oTopo.Resource.getTheme().node.labelColor
             });
-            _setLabelCenter(ICON_WIDTH, ICON_HEIGHT, oLabel);
+            oTopo.Sprite.NodeGroup._setLabelCenter(ICON_WIDTH, ICON_HEIGHT, oLabel);
             oGroup.add(oLabel);
 
-            //3.oExpandGroupExists
+            //#endregion
+
+            //#region 3.parent
+
             oExpandGroupExists.add(oGroup);
 
-            //4.event
-            oGroup.on('click', function(evt) {
-                console.log("click...");
-            });
+            //#endregion
+
+            //#region 4.event
+
             oGroup.on('mouseover', function(evt) {
-                document.body.style.cursor = 'pointer';
+                oTopo.Sprite.NodeGroup._onNodeGroupOrNodeMouseOver(oGroup, oTopo);
             });
             oGroup.on('mouseout', function(evt) {
-                document.body.style.cursor = 'default';
+                oTopo.Sprite.NodeGroup._onNodeGroupOrNodeMouseOut(oGroup, oTopo);
             });
-            oImage.on("click", function(evt){
-                _setSelectNodeStyle(this, oTopo);
+            oGroup.on('click', function(evt) {
+                evt.cancelBubble = true;
+                oTopo.Sprite.NodeGroup._onNodeGroupOrNodeClick(oGroup, oTopo);
             });
-            oImage.on("mouseover", function(){
-                _setMouseHoverStyle(this, oTopo)
+            oGroup.on('dragmove', function(evt){
+                //TODO:调用LinkGroup
             });
-            oImage.on("mouseout", function(){
-                _setMouseHoverOutStyle(this, oTopo);
-            });
+
+            //#endregion
 
             return oGroup;
         };
 
+        var _getPos = function(oBuObj){
+            return {
+                x: oBuObj.x,
+                y: oBuObj.y
+            };
+        };
+
+        //#endregion
+
+        //#region event
+
         //#endregion
 
         //#region style
-
-        var _setLabelCenter = function(iIconWidth, iIconHeight, oLabel){
-            oLabel.setOffset({
-                x: -iIconWidth / 2 + oLabel.getWidth() / 2,
-                y: -iIconHeight
-            });
-        };
-
-        var _setSelectNodeStyle = function(oImage, oTopo){
-            //1.便于后续搜索
-            oImage.name(this.SELECT);
-            //2.style
-            oImage.fillEnabled(true);
-            oImage.strokeEnabled(true);
-            oImage.stroke(oTopo.Resource.getTheme().node.selectColor);
-            oImage.strokeWidth(4);
-            oImage.lineJoin("round");
-            oImage.lineCap("round");
-            oImage.fill(oTopo.Resource.getTheme().node.selectColor);
-            oTopo.Layer.reDraw(oTopo.ins.layerNode);
-        };
-
-        var _setUnSelectNodeStyle = function(oImage){
-            //1.便于后续搜索
-            oImage.name(this.UNSELECT);
-            //2.设置样式
-            oImage.fillEnabled(false);
-            oImage.strokeEnabled(false);
-        };
-
-        var _setMouseHoverStyle = function(oImage, oTopo){
-            oImage.shadowEnabled(true);
-            oImage.shadowColor("rgba(255,255,255,0.75)");
-            oImage.shadowBlur(5);
-            oTopo.Layer.reDraw(oTopo.ins.layerNode);
-        };
-
-        var _setMouseHoverOutStyle = function(oImage, oTopo){
-            oImage.shadowEnabled(false);
-            oTopo.Layer.reDraw(oTopo.ins.layerNode);
-        };
 
         //#endregion
 
@@ -230,10 +206,6 @@
                 x: oGroup.children[0].width() / 2 + oGroup.x(),
                 y: oGroup.children[0].height() / 2 + oGroup.y()
             };
-        };
-
-        this.unSelectNode = function(oImage){
-            _setUnSelectNodeStyle(oImage);
         };
 
         //#endregion

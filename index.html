@@ -5,6 +5,7 @@
     <title>Shit</title>
     <link type="text/css" rel="stylesheet" href="css/MarvelTopo.css"/>
     <script type="application/javascript" src="lib/konva.js"></script>
+    <script type="application/javascript" src="lib/keyboard.min.js"></script>
     <script type="application/javascript" src="lib/jquery-3.2.1.min.js"></script>
     <script type="application/javascript" src="js/_1_stage/MarvelTopoResource.js"></script>
     <script type="application/javascript" src="js/_1_stage/MarvelTopoStage.js"></script>
@@ -33,6 +34,10 @@
 
             var THEME_DARK = {
                 dark: {
+                    node: {
+                        labelColor: "#fff",
+                        selectColor: "rgba(255,255,255,0.25)"
+                    },
                     link: {
                         linkColor: {
                             linkType1: "#ababb5",
@@ -55,6 +60,7 @@
                     x: iX,
                     y: iY,
                     uiImgKey: "nodeGroup",
+                    uiImgKey4Expand: "nodeGroupExpand",
                     uiLabel: "nodeGroup" + i,
                     uiExpandNode: false,
                     uiExpandNodeWidth: 200,
@@ -173,6 +179,8 @@
 
             //#endregion
 
+            //#region demo
+
             //Topo
             var oTopo = new $.MarvelTopo();
             //Resource
@@ -206,6 +214,8 @@
             $("#collapseNodeGroup").click(function(){
                 oTopo.Sprite.NodeGroup.collapseAllNodeGroup(oTopo);
             });
+
+            //#endregion
         });
     </script>
 </head>

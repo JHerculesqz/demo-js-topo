@@ -20,7 +20,7 @@
 
         //#endregion
 
-        //#region moveToBottom
+        //#region imsg
 
         this.moveToBottom = function(oLayer){
             oLayer.moveToBottom();
