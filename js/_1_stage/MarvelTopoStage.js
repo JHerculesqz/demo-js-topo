@@ -130,7 +130,7 @@
             }
 
             return arrRes;
-        }
+        };
 
         //#endregion
     }

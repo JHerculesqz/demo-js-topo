@@ -68,35 +68,9 @@
                 oTopo.Sprite.NodeGroup._onNodeGroupOrNodeClick(oGroup, oTopo);
             });
             oGroup.on('dragmove', function(evt){
-                //TODO:调用LinkGroup
-                // //1.联动关联的链路
-                // var arrLinkId = oBuObj.uiLinkIds;
-                // var arrLinks = [];
-                // for(var i=0;i<arrLinkId.length;i++){
-                //     var oLink = oTopo.Stage.findOne(arrLinkId[i], oTopo);
-                //     if(oLink){
-                //         var oBuObjLink = oLink.tag;
-                //         // oTopo.Sprite.Link.draw(oBuObjLink, i, oTopo);
-                //         //如果是捆绑链路
-                //         if(oBuObjLink.children && oBuObjLink.children.length > 1){
-                //             arrLinks.push(oBuObjLink);
-                //         }
-                //         //如果是捆绑链路的子链路
-                //         else if(oBuObjLink.parent){
-                //             if(arrLinks.indexOf(oBuObjLink.parent) < 0){
-                //                 arrLinks.push(oBuObjLink.parent);
-                //             }
-                //         }
-                //         //如果是普通单链路
-                //         else{
-                //             arrLinks.push(oBuObjLink);
-                //         }
-                //     }
-                // }
-                // oTopo.Sprite.LinkGroup.draw4Group(arrLinks, oTopo);
+                //1.联动关联的链路
+                oTopo.Sprite.LinkGroup.response2NodeEvent4ReDraw(oGroup.tag, oTopo);
             });
-
-            //#endregion
 
             return oGroup;
         };
@@ -175,6 +149,7 @@
             });
             oGroup.on('dragmove', function(evt){
                 //TODO:调用LinkGroup
+                oTopo.Sprite.LinkGroup.response2NodeEvent4ReDraw(oGroup.tag, oTopo);
             });
 
             //#endregion
@@ -202,10 +177,22 @@
         //#region imsg
 
         this.getCenterPos = function(oGroup){
+            var x = oGroup.children[0].width() / 2 + oGroup.x();
+            var y = oGroup.children[0].height() / 2 + oGroup.y();
+            for(;;){
+                var oGroup = oGroup.getParent();
+                if(oGroup && oGroup.nodeType === "Group"){
+                    x = x + oGroup.x();
+                    y = y + oGroup.y();
+                }
+                else{
+                    break;
+                }
+            }
             return {
-                x: oGroup.children[0].width() / 2 + oGroup.x(),
-                y: oGroup.children[0].height() / 2 + oGroup.y()
-            };
+                x: x,
+                y: y
+            }
         };
 
         //#endregion

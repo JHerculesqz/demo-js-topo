@@ -85,25 +85,22 @@
             });
             oGroup.on('dblclick', function(evt) {
                 _onCollpaseGroupDBClick(oBuObj, oGroup, oTopo);
+                //联动链路
+                oTopo.Sprite.LinkGroup.response2NodeEvent4ReDraw(oGroup.tag, oTopo);
             });
             oGroup.on("click", function(evt){
                 self._onNodeGroupOrNodeClick(oGroup, oTopo);
             });
             oGroup.on('dragmove', function(evt){
-                var arrSelectNode = _getSelectNodeGroupAndNodes(oTopo);
-                for(var i=0;i<arrSelectNode.length;i++){
-                    var oSelectNode = arrSelectNode[i];
-                    oSelectNode.x(oSelectNode.x() + evt.evt.offsetX);
-                    oSelectNode.y(oSelectNode.y() + evt.evt.offsetY);
-                }
+                //var arrSelectNode = _getSelectNodeGroupAndNodes(oTopo);
+                //for(var i=0;i<arrSelectNode.length;i++){
+                //    var oSelectNode = arrSelectNode[i];
+                //    oSelectNode.x(oSelectNode.x() + evt.evt.offsetX);
+                //    oSelectNode.y(oSelectNode.y() + evt.evt.offsetY);
+                //}
 
                 //1.联动关联的链路
-                var arrLinkId = oBuObj.uiLinkIds;
-                for(var i=0;i<arrLinkId.length;i++){
-                    var oLink = oTopo.Stage.findOne(arrLinkId[i], oTopo);
-                    var oBuObjLink = oLink.tag;
-                    oTopo.Sprite.Link.draw(oBuObjLink, i, oTopo);
-                }
+                oTopo.Sprite.LinkGroup.response2NodeEvent4ReDraw(oGroup.tag, oTopo);
             });
 
             //#endregion
@@ -185,9 +182,15 @@
             });
             oGroup.on('dblclick', function(evt) {
                 _onExpandGroupDBClick(oBuObj, oGroup, oTopo);
+                //联动链路
+                oTopo.Sprite.LinkGroup.response2NodeEvent4ReDraw(oGroup.tag, oTopo);
             });
             oGroup.on("click", function(evt){
                 self._onNodeGroupOrNodeClick(oGroup, oTopo);
+            });
+            oGroup.on('dragmove', function(evt){
+                //1.联动关联的链路
+                oTopo.Sprite.LinkGroup.response2NodeEvent4ReDraw(oGroup.tag, oTopo);
             });
 
             //#endregion
@@ -294,6 +297,10 @@
             oTopo.Layer.reDraw(oTopo.ins.layerNode);
         };
 
+        var _groupDragMoveEvent = function(oGroup, oTopo){
+            oTopo.Sprite.LinkGroup.response2NodeEvent4ReDraw(oGroup.tag, oTopo);
+        };
+
         //#endregion
 
         //#region imsg
@@ -307,6 +314,8 @@
             for(var i=0;i<arrCollapseGroupExists.length;i++){
                 var oCollapseGroupExists = arrCollapseGroupExists[i];
                 _drawExpand(oCollapseGroupExists.tag, oCollapseGroupExists, oTopo);
+                //联动链路
+                oTopo.Sprite.LinkGroup.response2NodeEvent4ReDraw(oCollapseGroupExists.tag, oTopo);
             }
         };
 
@@ -319,6 +328,8 @@
             for(var i=0;i<arrExpandGroupExists.length;i++){
                 var oExpandGroupExists = arrExpandGroupExists[i];
                 _drawCollapse(oExpandGroupExists.tag, oExpandGroupExists, oTopo);
+                //联动链路
+                oTopo.Sprite.LinkGroup.response2NodeEvent4ReDraw(oExpandGroupExists.tag, oTopo);
             }
         };
 
@@ -375,6 +386,36 @@
                 oTopo.Stage.findGroupByTagAttr("uiSelectNode", true, oTopo);
 
             return arrSelectGroupExists;
+        };
+
+        //获取绘制的节点，如果该节点绘制过，直接返回该节点；如果没有绘制过，返回它的父节点
+        this.getDrawnNodeById = function(strId, oTopo){
+            var oGroup =  this.getDrawnGroupById(strId, oTopo);
+            if(oGroup){
+                return oGroup.tag;
+            }
+        };
+
+        this.getDrawnGroupById = function(strId, oTopo){
+            var oGroup =  oTopo.Stage.findOne(strId, oTopo);
+            //如果绘制过，直接返回
+            if(oGroup){
+                return oGroup;
+            }
+            //如果没有绘制过，返回父节点
+            else{
+                var oCollapseGroups = oTopo.Stage.findGroupByTagAttr("uiExpandNode", false, oTopo);
+                for(var i = 0, len = oCollapseGroups.length; i < len; i++){
+                    var oCollapseGroup = oCollapseGroups[i];
+                    var b = oCollapseGroup.tag.children.some(function(oChild, index){
+                        return oChild.id === strId;
+                    });
+                    if(b){
+                        return oCollapseGroup;
+                    }
+                }
+            }
+            return undefined;
         };
 
         //#endregion

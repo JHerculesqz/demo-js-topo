@@ -39,9 +39,11 @@
                         selectColor: "rgba(255,255,255,0.25)"
                     },
                     link: {
+                        labelColor: "#fff",
                         linkColor: {
                             linkType1: "#ababb5",
-                            linkType2: "red"
+                            linkType2: "#FF4c4c",
+                            linkType3: "#ff8833"
                         }
                     }
                 }
@@ -65,21 +67,21 @@
                     uiExpandNode: false,
                     uiExpandNodeWidth: 200,
                     uiExpandNodeHeight: 200,
-                    uiLinkIds: [],
+                    uiNode: true,
                     children: [{
                         id: "node" + i + "_1",
                         x: 50,
                         y: 50,
                         uiImgKey: "node",
                         uiLabel: "node" + i + "_1",
-                        uiLinkIds: [],
+                        uiNode: true
                     }, {
                         id: "node" + i + "_2",
                         x: 100,
                         y: 100,
                         uiImgKey: "node",
                         uiLabel: "node" + i + "_2",
-                        uiLinkIds: [],
+                        uiNode: true
                     }]
                 };
                 arrNodeGroup.push(oNodeGroup);
@@ -95,7 +97,7 @@
                     y: iY,
                     uiImgKey: "node",
                     uiLabel: "node" + i,
-                    uiLinkIds: [],
+                    uiNode: true
                 };
                 arrNode.push(oNode);
             }
@@ -105,7 +107,7 @@
             //#region link
 
             var arrNodeBase = [];
-            for(var i=0;i<2;i++){
+            for(var i=0;i<3;i++){
                 var iX = Math.random() * 400;
                 var iY = Math.random() * 200;
                 var oNode = {
@@ -114,11 +116,8 @@
                     y: iY,
                     uiImgKey: "node",
                     uiLabel: "node" + i,
-                    uiLinkIds: ["link0", "link1", "link2", "gLink1", "gLink1_1", "gLink1_2"]
+                    uiNode: true
                 };
-                for(var j=3;j<3;j++){
-                    oNode.uiLinkIds.push("link" + j);
-                }
                 arrNodeBase.push(oNode);
             }
 
@@ -126,54 +125,197 @@
             for(var i=0;i<3;i++){
                 var oLink = {
                     id: "link" + i,
-                    x: iX,
-                    y: iY,
                     srcNodeId: "nodeBase0",
                     dstNodeId: "nodeBase1",
                     uiLabelL: "nodeBase0",
-                    uiLabelM: "link-nodeBase0-nodeBase1-" + i,
+                    uiLabelM: "link" + i,
                     uiLabelR: "nodeBase1",
+                    uiLink: true,
                     uiLinkColorKey: "linkType1",
-                    uiLinkWidth: 3
+                    uiLinkWidth: 3,
+                    uiDash: [10,5]
                 };
                 arrLinkBase.push(oLink);
             }
-            var oGLink = {
-                id: "gLink1",
-                x: iX,
-                y: iY,
-                srcNodeId: "nodeBase0",
-                dstNodeId: "nodeBase1",
-                uiLabelL: "nodeBase0",
-                uiLabelM: "link-nodeBase0-nodeBase1-" + i,
-                uiLabelR: "nodeBase1",
-                uiLinkColorKey: "linkType2",
-                uiLinkWidth: 3,
-                children: [{
-                    id: "gLink1_1",
-                    x: iX,
-                    y: iY,
-                    srcNodeId: "nodeBase0",
-                    dstNodeId: "nodeBase1",
-                    uiLabelL: "nodeBase0",
-                    uiLabelM: "link-nodeBase0-nodeBase1-" + i,
-                    uiLabelR: "nodeBase1",
+            for(var i = 0; i < 2; i++){
+                //oLink1和oLink2为一组
+                var oLink1 = {
+                    id: "gLink" + i + "_" + i,
+                    srcNodeId: "nodeBase" + i,
+                    dstNodeId: "nodeBase" + (i + 1),
+                    uiLinkGroupId: "groupLink" + i + "_" + i,
+                    uiLink: true,
+                    uiLinkExpand: false,
+                    uiLabelL: "nodeBase" + i,
+                    uiLabelM: "link" + i,
+                    uiLabelR: "nodeBase" + (i + 1),
                     uiLinkColorKey: "linkType2",
                     uiLinkWidth: 3
-                }, {
-                    id: "gLink1_2",
-                    x: iX,
-                    y: iY,
-                    srcNodeId: "nodeBase0",
-                    dstNodeId: "nodeBase1",
-                    uiLabelL: "nodeBase0",
-                    uiLabelM: "link-nodeBase0-nodeBase1-" + i,
-                    uiLabelR: "nodeBase1",
+                };
+                var oLink2 = {
+                    id: "gLink" + i + "_" + (i + 1),
+                    srcNodeId: "nodeBase" + i,
+                    dstNodeId: "nodeBase" + (i + 1),
+                    uiLinkGroupId: "groupLink" + i + "_" + i,
+                    uiLink: true,
+                    uiLinkExpand: false,
+                    uiLabelL: "nodeBase" + i,
+                    uiLabelM: "link" + i,
+                    uiLabelR: "nodeBase" + (i + 1),
                     uiLinkColorKey: "linkType2",
                     uiLinkWidth: 3
-                }]
-            };
-            arrLinkBase.push(oGLink);
+                };
+                //oLink3和oLink4为一组
+                var oLink3 = {
+                    id: "gLink" + i + "_" + (i + 2),
+                    srcNodeId: "nodeBase" + i,
+                    dstNodeId: "nodeBase" + (i + 1),
+                    uiLinkGroupId: "groupLink" + i + "_" + (i + 1),
+                    uiLink: true,
+                    uiLinkExpand: false,
+                    uiLabelL: "nodeBase" + i,
+                    uiLabelM: "link" + i,
+                    uiLabelR: "nodeBase" + (i + 1),
+                    uiLinkColorKey: "linkType3",
+                    uiLinkWidth: 3
+                };
+
+                var oLink4 = {
+                    id: "gLink" + i + "_" + (i + 3),
+                    srcNodeId: "nodeBase" + i,
+                    dstNodeId: "nodeBase" + (i + 1),
+                    uiLinkGroupId: "groupLink" + i + "_" + (i + 1),
+                    uiLink: true,
+                    uiLinkExpand: false,
+                    uiLabelL: "nodeBase" + i,
+                    uiLabelM: "link" + i,
+                    uiLabelR: "nodeBase" + (i + 1),
+                    uiLinkColorKey: "linkType3",
+                    uiLinkWidth: 3
+                };
+
+                arrLinkBase.push(oLink1);
+                arrLinkBase.push(oLink2);
+                arrLinkBase.push(oLink3);
+                arrLinkBase.push(oLink4);
+            }
+            for(var i = 100; i < 101; i++){
+                var oLink1 = {
+                    id: "gLink" + i + 0,
+                    srcNodeId: "nodeBase2",
+                    dstNodeId: "node1_1",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "gLink" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkExpand: false,
+                    uiLink: true,
+                    uiLinkGroupId: "groupLink" + i + 0,
+                    uiLinkColorKey: "linkType2",
+                    uiLinkWidth: 3
+                };
+                var oLink2 = {
+                    id: "gLink" + i + 1,
+                    srcNodeId: "nodeBase2",
+                    dstNodeId: "node1_1",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "gLink" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkExpand: false,
+                    uiLink: true,
+                    uiLinkGroupId: "groupLink" + i + 0,
+                    uiLinkColorKey: "linkType2",
+                    uiLinkWidth: 3
+                };
+                var oLink3 = {
+                    id: "gLink" + i + 2,
+                    srcNodeId: "nodeBase2",
+                    dstNodeId: "node1_2",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "gLink" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkExpand: false,
+                    uiLink: true,
+                    uiLinkGroupId: "groupLink" + i + 1,
+                    uiLinkColorKey: "linkType3",
+                    uiLinkWidth: 3
+                };
+                var oLink4 = {
+                    id: "gLink" + i + 3,
+                    srcNodeId: "nodeBase2",
+                    dstNodeId: "node1_2",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "gLink" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkExpand: false,
+                    uiLink: true,
+                    uiLinkGroupId: "groupLink" + i + 1,
+                    uiLinkColorKey: "linkType3",
+                    uiLinkWidth: 3
+                };
+                arrLinkBase.push(oLink1);
+                arrLinkBase.push(oLink2);
+                arrLinkBase.push(oLink3);
+                arrLinkBase.push(oLink4);
+            }
+
+            for(var i = 200; i < 201; i++){
+                var oLink1 = {
+                    id: "gLink" + i + 0,
+                    srcNodeId: "node0_1",
+                    dstNodeId: "node1_1",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "gLink" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkExpand: false,
+                    uiLink: true,
+                    uiLinkGroupId: "groupLink" + i + 0,
+                    uiLinkColorKey: "linkType2",
+                    uiLinkWidth: 3
+                };
+                var oLink2 = {
+                    id: "gLink" + i + 1,
+                    srcNodeId: "node0_1",
+                    dstNodeId: "node1_1",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "gLink" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkExpand: false,
+                    uiLink: true,
+                    uiLinkGroupId: "groupLink" + i + 0,
+                    uiLinkColorKey: "linkType2",
+                    uiLinkWidth: 3
+                };
+                var oLink3 = {
+                    id: "gLink" + i + 2,
+                    srcNodeId: "node0_2",
+                    dstNodeId: "node1_2",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "gLink" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkExpand: false,
+                    uiLink: true,
+                    uiLinkGroupId: "groupLink" + i + 1,
+                    uiLinkColorKey: "linkType3",
+                    uiLinkWidth: 3
+                };
+                var oLink4 = {
+                    id: "gLink" + i + 3,
+                    srcNodeId: "node0_2",
+                    dstNodeId: "node1_2",
+                    uiLabelL: "nodeBase0",
+                    uiLabelM: "gLink" + i,
+                    uiLabelR: "nodeBase1",
+                    uiLinkExpand: false,
+                    uiLink: true,
+                    uiLinkGroupId: "groupLink" + i + 1,
+                    uiLinkColorKey: "linkType3",
+                    uiLinkWidth: 3
+                };
+                arrLinkBase.push(oLink1);
+                arrLinkBase.push(oLink2);
+                arrLinkBase.push(oLink3);
+                arrLinkBase.push(oLink4);
+            }
 
             //#endregion
 
@@ -204,7 +346,8 @@
                 for(var i=0;i<arrNodeBase.length;i++){
                     oTopo.Sprite.Node.draw(arrNodeBase[i], oTopo);
                 }
-                oTopo.Sprite.LinkGroup.draw4Group(arrLinkBase, oTopo);
+                oTopo.Sprite.LinkGroup.draw(arrLinkBase, oTopo);
+
                 oTopo.Layer.reDraw(oTopo.ins.layerLink);
             });
 
@@ -215,6 +358,13 @@
                 oTopo.Sprite.NodeGroup.collapseAllNodeGroup(oTopo);
             });
 
+            $("#expandLinkGroup").click(function(){
+                oTopo.Sprite.LinkGroup.expandAllLinkGroup(oTopo);
+            });
+            $("#collapseLinkGroup").click(function(){
+                oTopo.Sprite.LinkGroup.collapseAllLinkGroup(oTopo);
+            });
+
             //#endregion
         });
     </script>
@@ -222,6 +372,8 @@
 <body>
     <button id="expandNodeGroup">expandNodeGroup</button>
     <button id="collapseNodeGroup">collapseNodeGroup</button>
+    <button id="expandLinkGroup">expandLinkGroup</button>
+    <button id="collapseLinkGroup">collapseLinkGroup</button>
     <div id="id1"></div>
 </body>
 </html>
