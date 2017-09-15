@@ -48,7 +48,7 @@
 
             //#region 3.event
 
-            _initEventWheel(oStage);
+            _initEventWheel(strId, oStage);
             _initEventAddMinus(oTopo);
             _initEventClick(oStageRect, oTopo);
             _initEventCtrlPress(oTopo);
@@ -67,9 +67,9 @@
 
         //#region event
 
-        var _initEventWheel = function(oStage){
+        var _initEventWheel = function(strId, oStage){
             //TODO:需要缩小绑定事件的范围
-            window.addEventListener('wheel', function(e){
+            document.getElementById(strId).addEventListener('wheel', function(e){
                 e.preventDefault();
                 var oldScale = oStage.scaleX();
                 var mousePointTo = {
