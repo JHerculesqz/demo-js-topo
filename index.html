@@ -53,6 +53,7 @@
 
             //#region node
 
+            //#region 光站点
             var arrNodeGroup = [];
             for(var i=0;i<2;i++) {
                 var iX = Math.random() * 400;
@@ -86,7 +87,9 @@
                 };
                 arrNodeGroup.push(oNodeGroup);
             }
+            //#endregion
 
+            //#region 网元
             var arrNode = [];
             for(var i=0;i<2;i++){
                 var iX = Math.random() * 400;
@@ -101,11 +104,13 @@
                 };
                 arrNode.push(oNode);
             }
+            //#endregion
 
             //#endregion
 
             //#region link
 
+            //#region 网元
             var arrNodeBase = [];
             for(var i=0;i<3;i++){
                 var iX = Math.random() * 400;
@@ -115,12 +120,14 @@
                     x: iX,
                     y: iY,
                     uiImgKey: "node",
-                    uiLabel: "node" + i,
+                    uiLabel: "nodeBase" + i,
                     uiNode: true
                 };
                 arrNodeBase.push(oNode);
             }
+            //#endregion
 
+            //#region 网元与网元之间的单条链路
             var arrLinkBase = [];
             for(var i=0;i<3;i++){
                 var oLink = {
@@ -137,6 +144,9 @@
                 };
                 arrLinkBase.push(oLink);
             }
+            //#endregion
+
+            //#region 网元与网元之间的捆绑链路
             for(var i = 0; i < 2; i++){
                 //oLink1和oLink2为一组
                 var oLink1 = {
@@ -199,6 +209,9 @@
                 arrLinkBase.push(oLink3);
                 arrLinkBase.push(oLink4);
             }
+            //#endregion
+
+            //#region 网元与光设备之间的捆绑链路
             for(var i = 100; i < 101; i++){
                 var oLink1 = {
                     id: "gLink" + i + 0,
@@ -257,7 +270,9 @@
                 arrLinkBase.push(oLink3);
                 arrLinkBase.push(oLink4);
             }
+            //#endregion
 
+            //#region 光设备与光设备之间的捆绑链路
             for(var i = 200; i < 201; i++){
                 var oLink1 = {
                     id: "gLink" + i + 0,
@@ -316,6 +331,7 @@
                 arrLinkBase.push(oLink3);
                 arrLinkBase.push(oLink4);
             }
+            //#endregion
 
             //#endregion
 
